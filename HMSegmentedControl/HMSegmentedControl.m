@@ -160,6 +160,9 @@
     self.selectionIndicatorBoxOpacity = 0.2;
     
     self.contentMode = UIViewContentModeRedraw;
+    
+    self.segmentImageTopOffset = 0;
+    self.segmentTitleBottomOffset = 5.5f;
 }
 
 - (void)layoutSubviews {
@@ -378,7 +381,12 @@
             CGFloat imageHeight = icon.size.height;
 			
             CGFloat stringHeight = [self measureTitleAtIndex:idx].height;
-			CGFloat yOffset = roundf(((CGRectGetHeight(self.frame) - self.selectionIndicatorHeight) / 2) - (stringHeight / 2));
+            CGFloat yOffset = 0;
+            if (self.textUnderImages) {
+                yOffset = (CGRectGetHeight(self.frame) - self.selectionIndicatorHeight) - stringHeight - self.segmentTitleBottomOffset;
+            } else {
+                yOffset = roundf(((CGRectGetHeight(self.frame) - self.selectionIndicatorHeight) / 2) - (stringHeight / 2));
+            }
             
             CGFloat imageXOffset = self.segmentEdgeInset.left; // Start with edge inset
             CGFloat textXOffset  = self.segmentEdgeInset.left;
@@ -407,7 +415,7 @@
                 textWidth = [self.segmentWidthsArray[idx] floatValue];
             }
             
-            CGFloat imageYOffset = roundf((CGRectGetHeight(self.frame) - self.selectionIndicatorHeight) / 2.0f);
+            CGFloat imageYOffset = self.textUnderImages ? self.segmentImageTopOffset : roundf((CGRectGetHeight(self.frame) - self.selectionIndicatorHeight) / 2.0f);
             CGRect imageRect = CGRectMake(imageXOffset, imageYOffset, imageWidth, imageHeight);
             CGRect textRect = CGRectMake(textXOffset, yOffset, textWidth, stringHeight);
             

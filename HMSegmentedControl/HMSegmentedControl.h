@@ -219,6 +219,15 @@ typedef enum {
  */
 @property (nonatomic) BOOL shouldAnimateUserSelection;
 
+/**
+ Works only with HMSegmentedControlTypeTextImages type.
+ */
+@property (nonatomic) BOOL textUnderImages;
+
+@property (nonatomic, readwrite) CGFloat segmentImageTopOffset;
+@property (nonatomic, readwrite) CGFloat segmentTitleBottomOffset;
+
+
 - (id)initWithSectionTitles:(NSArray *)sectiontitles;
 - (id)initWithSectionImages:(NSArray *)sectionImages sectionSelectedImages:(NSArray *)sectionSelectedImages;
 - (instancetype)initWithSectionImages:(NSArray *)sectionImages sectionSelectedImages:(NSArray *)sectionSelectedImages titlesForSections:(NSArray *)sectiontitles;
