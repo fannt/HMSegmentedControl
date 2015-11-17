@@ -110,6 +110,13 @@ typedef enum {
 @property (nonatomic) CGFloat selectionIndicatorBoxOpacity;
 
 /**
+ Corner radius for the seletion indicator box.
+ 
+ Default is `0.0f`
+ */
+@property (nonatomic) CGFloat selectionIndicatorBoxCornerRadius;
+
+/**
  Width the vertical divider between segments that is added when `verticalDividerEnabled` is set to YES.
  
  Default is `1.0f`
