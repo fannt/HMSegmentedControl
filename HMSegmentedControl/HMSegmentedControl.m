@@ -298,7 +298,7 @@
             
             // Text inside the CATextLayer will appear blurry unless the rect values are rounded
             BOOL locationUp = (self.selectionIndicatorLocation == HMSegmentedControlSelectionIndicatorLocationUp);
-            BOOL selectionStyleNotBox = (self.selectionStyle != HMSegmentedControlSelectionStyleBox);
+            BOOL selectionStyleNotBox = (self.selectionStyle != HMSegmentedControlSelectionStyleBox || self.selectionStyle != HMSegmentedControlSelectionStyleBoxRound);
 
             CGFloat y = roundf((CGRectGetHeight(self.frame) - selectionStyleNotBox * self.selectionIndicatorHeight) / 2 - stringHeight / 2 + self.selectionIndicatorHeight * locationUp);
             CGRect rect;
@@ -473,6 +473,10 @@
                     self.selectionIndicatorBoxLayer.frame = [self frameForFillerSelectionIndicator];
                     [self.scrollView.layer insertSublayer:self.selectionIndicatorBoxLayer atIndex:0];
                 }
+                if (self.selectionStyle == HMSegmentedControlSelectionStyleBoxRound && !self.selectionIndicatorBoxLayer.superlayer) {
+                    self.selectionIndicatorBoxLayer.frame = [self frameForRoundFillerSelectionIndicator];
+                    [self.scrollView.layer insertSublayer:self.selectionIndicatorBoxLayer atIndex:0];
+                }
             }
         }
     }
@@ -623,6 +627,35 @@
         return CGRectMake(selectedSegmentOffset, 0, [[self.segmentWidthsArray objectAtIndex:self.selectedSegmentIndex] floatValue], CGRectGetHeight(self.frame));
     }
     return CGRectMake(self.segmentWidth * self.selectedSegmentIndex, 0, self.segmentWidth, CGRectGetHeight(self.frame));
+}
+
+- (CGRect)frameForRoundFillerSelectionIndicator {
+    if (self.segmentWidthStyle == HMSegmentedControlSegmentWidthStyleDynamic) {
+        CGFloat selectedSegmentOffset = 0.0f;
+        
+        NSInteger i = 0;
+        for (NSNumber *width in self.segmentWidthsArray) {
+            CGFloat fwidth = [width floatValue];
+            
+            if (self.selectedSegmentIndex == i) {
+            
+                CGFloat minSide = MIN(fwidth, self.frame.size.height);
+                CGFloat squareDelta = fwidth - minSide;
+                
+                fwidth += squareDelta/2;
+                break;
+            }
+            selectedSegmentOffset = selectedSegmentOffset + fwidth;
+            
+            i++;
+        }
+        
+        return CGRectMake(selectedSegmentOffset, 0, [[self.segmentWidthsArray objectAtIndex:self.selectedSegmentIndex] floatValue], CGRectGetHeight(self.frame));
+    }
+    CGFloat minSide = MIN(CGRectGetHeight(self.frame), self.segmentWidth);
+    CGFloat squareDelta = self.segmentWidth - minSide;
+    
+    return CGRectMake(self.segmentWidth * self.selectedSegmentIndex + squareDelta/2, 0, minSide, minSide);
 }
 
 - (void)updateSegmentsRects {
@@ -821,7 +854,8 @@
                 if ([self.selectionIndicatorStripLayer superlayer] == nil) {
                     [self.scrollView.layer addSublayer:self.selectionIndicatorStripLayer];
                     
-                    if (self.selectionStyle == HMSegmentedControlSelectionStyleBox && [self.selectionIndicatorBoxLayer superlayer] == nil)
+                    if ((self.selectionStyle == HMSegmentedControlSelectionStyleBox || self.selectionStyle == HMSegmentedControlSelectionStyleBoxRound)
+                                                                                    && [self.selectionIndicatorBoxLayer superlayer] == nil)
                         [self.scrollView.layer insertSublayer:self.selectionIndicatorBoxLayer atIndex:0];
                     
                     [self setSelectedSegmentIndex:index animated:NO notify:YES];
