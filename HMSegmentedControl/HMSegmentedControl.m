@@ -158,6 +158,7 @@
     self.selectionIndicatorBoxLayer.opacity = self.selectionIndicatorBoxOpacity;
     self.selectionIndicatorBoxLayer.borderWidth = 1.0f;
     self.selectionIndicatorBoxOpacity = 0.2;
+    self.selectionIndicatorBoxLayer.cornerRadius = self.selectionIndicatorBoxCornerRadius;
     
     self.contentMode = UIViewContentModeRedraw;
     
@@ -201,6 +202,12 @@
     _selectionIndicatorBoxOpacity = selectionIndicatorBoxOpacity;
     
     self.selectionIndicatorBoxLayer.opacity = _selectionIndicatorBoxOpacity;
+}
+
+- (void)setSelectionIndicatorBoxCornerRadius:(CGFloat)selectionIndicatorBoxCornerRadius {
+    _selectionIndicatorBoxCornerRadius = selectionIndicatorBoxCornerRadius;
+    
+    self.selectionIndicatorBoxLayer.cornerRadius = _selectionIndicatorBoxCornerRadius;
 }
 
 - (void)setSegmentWidthStyle:(HMSegmentedControlSegmentWidthStyle)segmentWidthStyle {
