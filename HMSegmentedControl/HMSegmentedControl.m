@@ -162,8 +162,9 @@
     
     self.contentMode = UIViewContentModeRedraw;
     
-    self.segmentImageTopOffset = 0;
+    self.segmentImageToTopCompactOffset = 0;
     self.segmentTitleBottomOffset = 5.5f;
+    self.titleToImageFadeDistance = 2.0f;
 }
 
 - (void)layoutSubviews {
@@ -389,10 +390,20 @@
 			
             CGFloat stringHeight = [self measureTitleAtIndex:idx].height;
             CGFloat yOffset = 0;
+            CGFloat imageYOffset = 0;
+            CGFloat titleOpacity = 0;
             if (self.textUnderImages) {
                 yOffset = (CGRectGetHeight(self.frame) - self.selectionIndicatorHeight) - stringHeight - self.segmentTitleBottomOffset;
+                CGFloat desierdImageYOffset = yOffset - self.titleToImageFadeDistance - imageHeight;
+                
+                imageYOffset = MAX(self.segmentImageToTopCompactOffset, desierdImageYOffset);
+                
+                //calculate distance between label and image
+                CGFloat verticalDistance = imageYOffset + imageHeight - yOffset;
+                titleOpacity = MIN(1, (self.titleToImageFadeDistance - verticalDistance)/self.titleToImageFadeDistance);
             } else {
                 yOffset = roundf(((CGRectGetHeight(self.frame) - self.selectionIndicatorHeight) / 2) - (stringHeight / 2));
+                imageYOffset =  roundf((CGRectGetHeight(self.frame) - self.selectionIndicatorHeight) / 2.0f);
             }
             
             CGFloat imageXOffset = self.segmentEdgeInset.left; // Start with edge inset
@@ -422,7 +433,6 @@
                 textWidth = [self.segmentWidthsArray[idx] floatValue];
             }
             
-            CGFloat imageYOffset = self.textUnderImages ? self.segmentImageTopOffset : roundf((CGRectGetHeight(self.frame) - self.selectionIndicatorHeight) / 2.0f);
             CGRect imageRect = CGRectMake(imageXOffset, imageYOffset, imageWidth, imageHeight);
             CGRect textRect = CGRectMake(textXOffset, yOffset, textWidth, stringHeight);
             
@@ -434,7 +444,8 @@
             titleLayer.alignmentMode = kCAAlignmentCenter;
             titleLayer.string = [self attributedTitleAtIndex:idx];
             titleLayer.truncationMode = kCATruncationEnd;
-			
+			titleLayer.opacity = titleOpacity;
+            
             CALayer *imageLayer = [CALayer layer];
             imageLayer.frame = imageRect;
 			
