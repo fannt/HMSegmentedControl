@@ -232,9 +232,9 @@ typedef enum {
  */
 @property (nonatomic) BOOL textUnderImages;
 
-@property (nonatomic, readwrite) CGFloat segmentImageTopOffset;
+@property (nonatomic, readwrite) CGFloat segmentImageToTopCompactOffset;
 @property (nonatomic, readwrite) CGFloat segmentTitleBottomOffset;
-
+@property (nonatomic, readwrite) CGFloat titleToImageFadeDistance;
 
 - (id)initWithSectionTitles:(NSArray *)sectiontitles;
 - (id)initWithSectionImages:(NSArray *)sectionImages sectionSelectedImages:(NSArray *)sectionSelectedImages;
